@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>GlD&IF에 오신 것을 환영합니다.</title>
+    <script type="text/javascript">
+        function logout(){
+            var f=confirm("로그아웃 하시겠습니까?");
+            if(f)
+                location.href="/logout"; //Controller에서 기능으로 연결..
+        }
+    </script>
+</head>
+<body>
+
+<div th:if="${session.mvo}">
+    <form method="post" action="login">
+        <table align="center">
+            <caption><img alt="" src="img/gld_logo_main.png"></caption>
+            <tr>
+                <td>I&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbspD</td><br>
+                <td>
+                    <label>
+                        <input type="text" name="id">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>PASSWD</td>
+                <td>
+                    <label>
+                        <input type="password" name="password">
+                    </label>
+                </td>
+            </tr>
+            <tr align="center">
+                <td colspan="2">
+                    <br><hr>
+                    <input type="submit" value="Login"><br><br>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div th:if="${session.mvo.empty}">
+    <p align="right"><a href=/logout>로그아웃</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</p>
+</div>
+
+</body>
+</html>

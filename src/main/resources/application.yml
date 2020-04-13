@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@127.0.0.1:1521:xe
+    username: hr
+    password: hr
+  thymeleaf:
+    enabled: true
+    encoding: utf-8
+    mode: HTML
+    cache: false
+
+mybatis:
+  configuration:
+    jdbc-type-for-null: null
+  type-aliases-package: "com.board.gldnif.model"
+
+server:
+  port: 8888
+

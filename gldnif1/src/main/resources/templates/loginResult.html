@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>LICENSE PAGE</title>
+    <script type="text/javascript">
+        function logout(){
+            let f=confirm("로그아웃 하시겠습니까?");
+            if(f)
+                location.href="logout"; //Controller에서 기능으로 연결..
+        }
+    </script>
+</head>
+<body align="center" topmargin="15%" >
+    <div th:if="${session.mvo != null}">
+        <img alt="" th:src="${session.mvo.profile_img}">
+        <h1>"<bold th:text="${session.mvo.name}"></bold>"</h1>
+        님이 로그인 하셨습니다.
+    </div>
+    <br>
+    <table align="center">
+        <td><button onclick="location.href='/insertFormat.html'">입력하기</button></td>
+        <td><form action="selectAll"><input type="submit" value="전체보기"></form></td>
+<!--        <td><form action="selectOne"><input type="submit" value="검색하기"></form></td>-->
+        <td><form action="javascript:logout()"><input type="submit" value="로그아웃"></form></td>
+    </table>
+</body>
+</html>

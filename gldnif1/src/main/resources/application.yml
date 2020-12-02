@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    username: root
+    password: 1234
+    url: jdbc:mysql://localhost:3306/LICENSE?serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  thymeleaf:
+    enabled: true
+    encoding: utf-8
+    mode: HTML
+    cache: false
+
+mybatis:
+  configuration:
+    jdbc-type-for-null: null
+  type-aliases-package: "com.board.gldnif.model"
+
+server:
+  port: 8080
+

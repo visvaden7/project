@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.board.gldnif.service.ProductService">
+<!--	<resultMap id="ProductInfoRM" type="ProductInfo">-->
+<!--		<result property="receiptDate" column="RECEIPT_DATE"/> //PRODUCT-->
+<!--		<result property="orderInc" column="ORDER_INC"/> //ORDER-->
+<!--		<result property="deliveryInc" column="DELIVERY_INC"/> //DELIVERY-->
+<!--		<result property="deliveryDate" column="DELIVERY_DATE"/> //ORDER-->
+<!--		<result property="lockeyNo" column="LOCKEY_NO"/> //PRODUCT-->
+<!--		<result property="model" column="MODEL"/> //PRODUCT-->
+<!--		<result property="licenseNo" column="LICENSE_NO"/> //PRODUCT-->
+<!--		<result property="productNo" column="PRODUCT_NO"/> //PRODUCT-->
+<!--		<result property="qc" column="qc"/> //QC-->
+<!--		<result property="qcDate" column="QC_DATE"/> //QC-->
+<!--		<result property="qcCharge" column="QC_CHARGE"/> //QC-->
+<!--		<result property="remark" column="REMARKS"/> //QC-->
+<!--	</resultMap>-->
+	<select id="selectAll" parameterType="com.board.gldnif.model.ProductInfo" resultType="com.board.gldnif.model.ProductInfo">
+			SELECT
+			P.PRODUCT_NO 		AS	productNo,
+			P.RECEIPT_DATE 		AS  receiptDate,
+			O.DELIVERY_DATE		AS	deliveryDate,
+			O.ORDER_NO			AS  orderNo,
+			O.ORDER_INC			AS	orderInc,
+			O.CODE_OF_BIZ		AS  cob,
+			D.DELIVERY_REQUEST_NO AS deliveryRequestNo,
+			D.CHARGE			AS  deliveryCharge,
+			P.LICENSE_NO		AS  licenseNo,
+			O.TAX_INVOICE		AS  taxInvoice,
+			D.DELIVERY_INC		AS 	deliveryInc,
+			P.LOCKEY_NO 		AS	lockeyNo,
+			P.MODEL				AS 	model,
+			Q.QC_ID				AS  qcId,
+			Q.QC				AS  qc,
+			Q.QC_DATE			AS  qcDate,
+			Q.QC_CHARGE			AS  qcCharge,
+			Q.REMARKS			AS	remarks
+
+			FROM PRODUCT AS P
+			LEFT OUTER JOIN ORDERS O ON O.ORDER_ID = P.ORDER_ID
+			LEFT OUTER JOIN DELIVERY AS D ON D.DELIVERY_ID = P.DELIVERY_ID
+			LEFT OUTER JOIN QC AS Q ON Q.PRODUCT_ID = P.PRODUCT_ID
+			WHERE Q.QC_ID IN (SELECT MAX(QC_ID) FROM QC GROUP BY PRODUCT_ID)
+			<!-- ^멀티로우 들이 나왔을 때, 조건 거는 방법 -->
+
+	</select>
+	<insert id="insert" parameterType="com.board.gldnif.model.ProductInfo">
+			INSERT INTO
+
+	</insert>
+</mapper>

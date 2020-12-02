@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>GlD&IF에 오신 것을 환영합니다.</title>
+    <script type="text/javascript">
+        function logout(){
+            var f=confirm("로그아웃 하시겠습니까?");
+            if(f)
+                location.href="/logout"; //Controller에서 기능으로 연결..
+        }
+    </script>
+    <style>
+        div{
+            margin-top:10%;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form method="post" action="/login">
+        <table align="center">
+            <caption><img alt="" src="img/gld_logo_main.png"/></caption>
+            <tr>
+                <td class="id">
+                    ID
+                </td>
+                <td>
+                    <input type="text" name="id" placeholder="id를 입해주새요">
+                </td>
+            </tr>
+            <tr>
+                <td class="pw">
+                   PASSWORD
+                </td>
+                <td>
+                    <input type="password" name="passwd" placeholder="password를 입력해주세">
+                </td>
+            </tr>
+            <tr align="center">
+                <td colspan="2">
+                    <br><hr>
+                    <input type="submit" value="Login"><br><br>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

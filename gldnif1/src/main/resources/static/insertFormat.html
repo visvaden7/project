@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/inserFormat.css}" rel="stylesheet" type="text/css">
+    <title>INSERT PAGE</title>
+    <script>
+        function setDisplay() {
+            if(document.getElementById("modelF").is.checked){
+                document.getElementById("licenseChannelD").style.display="none"
+
+                alert("F채널만 보입니다");
+            }else if(document.getElementById("modelD").is.checked){
+                document.getElementById("licenseChannelF").style.display="none"
+                alert("D채널만 보입니다");
+            }
+        }
+    </script>
+</head>
+<body>
+    <form action="insertOne" method="post">
+            <div id="Order">
+                <h1>발주번호</h1>
+                    <input type="text" placeholder="발주번호">
+                <h1>발주처</h1>
+                    <label><input type="radio" name="orderInc" value="TJONE">TJONE</label>
+                <h1>세금계산서</h1>
+                    <input type="text" placeholder="세금계산서">
+            </div>
+            <div class="Delivery">
+                <h1>납품처</h1>
+                    <input type="text" placeholder="납품처">
+                <h1>납품요구번호</h1>
+                    <input type="text" placeholder="납품요구번">
+                <h1>납품담당자</h1>
+                    <input type="text" placeholder="납품담당">
+            </div>
+            <div class="Product">
+                <h1>입고일</h1>
+                    <input type="date">
+                <h1>출고일</h1>
+                    <input type="date">
+                <h1>락키번호</h1>
+                    <input type="text" placeholder="락키번호">
+                <h1>시리얼번호</h1>
+                    <h5>모델번호</h5>
+                        <label><input type="radio" th:class="modelF" id="modelF" name="model" value="F" onclick="setDisplay()">F</label><br>
+                        <label th:checkd=""><input type="radio" th:class="modelD" id="modelD" name="model" value="D" onclick="setDisplay()">D</label><br>
+                    <h5>라이선스 채널</h5>
+                        <div id="licenseChannelF" th:if="">
+                                <label for="modelF"><input type="radio" id="F4" name="licenseChannel" value="4">4</label>
+                                <label for="modelF"><input type="radio" id="F8" name="licenseChannel" value="8">8</label><br>
+                        </div>
+                        <div id="licenseChannelD">
+                                <label for="modelD"><input type="radio" id="D1" name="licenseChannel" value="1">1</label>
+                                <label for="modelD"><input type="radio" id="D4" name="licenseChannel" value="4">4</label><br>
+                        </div>
+                    <h5>제품번호</h5>
+                        <input type="text" placeholder="제품번호">
+            </div>
+            <div class="Qc">
+                <h1>검수일</h1>
+                <input type="date">
+                <h1>제품상태</h1>
+                <input type="text" placeholder="상태">
+                <h1>검수담당자</h1>
+                <input type="text" placeholder="담당자">
+                <h1>비고</h1>
+                <input type="text" placeholder="비고">
+            </div>
+    <input type="submit" value="입력하기">
+    </form>
+</body>
+</html>

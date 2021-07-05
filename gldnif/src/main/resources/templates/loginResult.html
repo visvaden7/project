@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>LICENSE PAGE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript">
+        function logout(){
+            if(confirm("로그아웃 하시겠습니까?")){
+                $.ajax({
+                    type:'post',
+                    url : "/logout",
+                    success : function(){
+                        alert("로그아웃 성공!");
+                        history.pushState(null,null,location.href);
+                        window.onpopstate = function(event){
+                            history.go(1);
+                            alert(12);
+                        }
+                        location.replace("main")
+                    },
+                    error : function(){
+                        alert("로그아웃 도중 오류가 발생했습니다.")
+                    }
+                });
+            }
+        }
+    </script>
+    </head>
+    <body align="center" topmargin="15%" >
+        <div th:if="${session.mvo != null}">
+            <img alt="" th:src="${session.mvo.profile_img}">
+            <h1>"<bold th:text="${session.mvo.name}"></bold>"</h1>
+            님이 로그인 하셨습니다.
+        </div>
+        <br>
+        <table align="center">
+            <td><a href="/insertFormat.html" class="btn btn-primary btn-lg">입력하기</a></td>
+            <td><a href="/selectAll" class="btn btn-success btn-lg">전체보기</a></td>
+                <!--        <td><form action="selectOne"><input type="submit" value="검색하기"></form></td>-->
+            <td><button class="btn btn-dark btn-lg"  onclick="logout()">Logout</td>
+        </table>
+    </body>
+</html>

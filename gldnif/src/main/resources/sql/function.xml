@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.license.gldnif.service.ProductService">
+<!--	<resultMap id="ProductInfoRM" type="ProductInfo">-->
+<!--		<result property="receiptDate" column="RECEIPT_DATE"/> //PRODUCT-->
+<!--		<result property="orderInc" column="ORDER_INC"/> //ORDER-->
+<!--		<result property="deliveryInc" column="DELIVERY_INC"/> //DELIVERY-->
+<!--		<result property="deliveryDate" column="DELIVERY_DATE"/> //ORDER-->
+<!--		<result property="lockeyNo" column="LOCKEY_NO"/> //PRODUCT-->
+<!--		<result property="model" column="MODEL"/> //PRODUCT-->
+<!--		<result property="licenseNo" column="LICENSE_NO"/> //PRODUCT-->
+<!--		<result property="productNo" column="PRODUCT_NO"/> //PRODUCT-->
+<!--		<result property="qc" column="qc"/> //QC-->
+<!--		<result property="qcDate" column="QC_DATE"/> //QC-->
+<!--		<result property="qcCharge" column="QC_CHARGE"/> //QC-->
+<!--		<result property="remark" column="REMARKS"/> //QC-->
+<!--	</resultMap>-->
+	<select id="selectAll" parameterType="com.license.gldnif.model.ProductInfo" resultType="com.license.gldnif.model.ProductInfo">
+			SELECT
+			P.PRODUCT_NO 		AS	productNo,
+			P.RECEIPT_DATE 		AS  receiptDate,
+			O.DELIVERY_DATE		AS	deliveryDate,
+			O.ORDER_NO			AS  orderNo,
+			O.ORDER_INC			AS	orderInc,
+			O.CODE_OF_BIZ		AS  cob,
+			D.DELIVERY_REQUEST_NO AS deliveryRequestNo,
+			D.CHARGE			AS  deliveryCharge,
+			P.LICENSE_NO		AS  licenseNo,
+			O.TAX_INVOICE		AS  taxInvoice,
+			D.DELIVERY_INC		AS 	deliveryInc,
+			P.LOCKEY_NO 		AS	lockeyNo,
+			P.MODEL				AS 	model,
+			Q.QC_ID				AS  qcId,
+			Q.QC				AS  qc,
+			Q.QC_DATE			AS  qcDate,
+			Q.QC_CHARGE			AS  qcCharge,
+			Q.REMARKS			AS	remarks
+
+			FROM PRODUCT AS P
+			INNER JOIN ORDERS O ON O.ORDER_ID = P.ORDER_ID
+			LEFT OUTER JOIN DELIVERY AS D ON D.DELIVERY_ID = P.DELIVERY_ID
+			INNER JOIN JOIN QC AS Q ON Q.PRODUCT_ID = P.PRODUCT_ID
+			WHERE Q.QC_ID IN (SELECT MAX(QC_ID) FROM QC GROUP BY PRODUCT_ID)
+			<!-- ^멀티로우 들이 나왔을 때, 조건 거는 방법 -->
+
+	</select>
+	<select id="selectOrder" parameterType="com.license.gldnif.model.ProductInfo" resultType="com.license.gldnif.model.ProductInfo">
+		SELECT
+		O.ORDER_ID          AS  orderId,
+		O.ORDER_NO			AS  orderNo,
+		O.DELIVERY_DATE		AS	deliveryDate,
+		O.ORDER_INC			AS	orderInc,
+		O.CODE_OF_BIZ		AS  cob,
+		D.DELIVERY_REQUEST_NO AS deliveryRequestNo,
+		D.CHARGE			AS  deliveryCharge,
+		O.TAX_INVOICE		AS  taxInvoice,
+		D.DELIVERY_INC		AS 	deliveryInc
+		FROM ORDERS AS O
+		LEFT OUTER JOIN DELIVERY D ON O.ORDER_ID = D.ORDER_ID
+	</select>
+	<select id="selectProduct" parameterType="com.license.gldnif.model.ProductInfo" resultType="com.license.gldnif.model.ProductInfo">
+		SELECT
+		P.PRODUCT_NO 		AS	productNo,
+		P.RECEIPT_DATE 		AS  receiptDate,
+		P.LICENSE_NO		AS  licenseNo,
+		P.LOCKEY_NO 		AS	lockeyNo,
+		P.MODEL				AS 	model,
+		Q.QC_ID				AS  qcId,
+		Q.QC				AS  qc,
+		Q.QC_DATE			AS  qcDate,
+		Q.QC_CHARGE			AS  qcCharge,
+		Q.REMARKS			AS	remarks
+		FROM PRODUCT P
+		LEFT OUTER JOIN QC Q ON Q.PRODUCT_ID = P.PRODUCT_ID
+-- 		where P.PRODUCT_NO between rowStart = #{rowStart} and rowEnd = #{rowEnd}
+	</select>
+
+	<insert id="insertOrder" useGeneratedKeys="true">
+			INSERT INTO ORDERS ( ORDER_NO, ORDER_INC, DELIVERY_DATE, CODE_OF_BIZ, TAX_INVOICE )
+			VALUES ( #{orderNo}, #{orderInc}, #{deliveryDate},#{cob}, #{taxInvoice} )
+	</insert>
+	<insert id="insertDelivery" useGeneratedKeys="true">
+		<selectKey resultType="int" keyProperty="orderId" order="BEFORE">
+			SELECT ORDER_ID FROM ORDERS WHERE ORDER_NO = #{orderNo}
+		</selectKey>
+			INSERT INTO DELIVERY ( DELIVERY_REQUEST_NO, DELIVERY_INC, CHARGE, HP, ORDER_ID)
+			VALUES ( #{deliveryRequestNo}, #{deliveryInc}, #{deliveryCharge},#{hp}, #{orderId} )
+	</insert>
+	<update id="updateProduct" useGeneratedKeys="true">
+		<selectKey resultType="ProductInfo" keyColumn="orderId,deliveryId" keyProperty="orderId,deliveryId" order="BEFORE">
+			SELECT ORDER_ID AS orderId, DELIVERY_ID AS deliveryId FROM DELIVERY WHERE DELIVERY_REQUEST_NO = #{deliveryRequestNo}
+			/*컬럼명이 다를 때는 정보객체에 맞게 바꿔줘야 사용이 가능하다*/
+		</selectKey>
+			UPDATE PRODUCT
+			SET LOCKEY_NO = #{lockeyNo}, MODEL = #{model}, LICENSE_NO = #{licenseNo}, ORDER_ID = #{orderId}, DELIVERY_ID = #{deliveryId}
+			WHERE PRODUCT_NO = #{productNo}
+	</update>
+	<update id="upload" useGeneratedKeys="true">
+		UPDATE DELIVERY
+		SET FILE_PATH = #{filepath}
+		WHERE DELIVERY_REQUEST_NO = #{deliveryRequestNo}
+	</update>
+	<insert id="insertProduct" useGeneratedKeys="true">
+		<selectKey resultType="int" keyProperty="productNo" order="BEFORE">
+			SELECT MAX(PRODUCT_NO)+1 FROM PRODUCT
+		</selectKey>
+		INSERT INTO PRODUCT (PRODUCT_NO, RECEIPT_DATE)
+		VALUES (#{productNo}, #{receiptDate})
+	</insert>
+	<insert id="insertQc" useGeneratedKeys="true">
+		<selectKey resultType="int" keyProperty="productId" order="BEFORE">
+			SELECT PRODUCT_ID FROM PRODUCT WHERE PRODUCT_NO = #{productNo}
+		</selectKey>
+		INSERT INTO QC ( QC, QC_DATE, QC_CHARGE, REMARKS, PRODUCT_ID)
+		VALUES ( #{qc}, #{qcDate}, #{qcCharge}, #{remarks}, #{productId} )
+	</insert>
+</mapper>

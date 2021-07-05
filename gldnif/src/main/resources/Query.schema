@@ -1,0 +1,85 @@
+create schema if not exists LICENSE collate utf8_general_ci;
+
+create table if not exists ORDERS
+(
+	ORDER_ID int auto_increment
+		primary key,
+	ORDER_NO char(30) null,
+	ORDER_INC char(20) null,
+	DELIVERY_DATE date null,
+	CODE_OF_BIZ char(5) null,
+	TAX_INVOICE char(30) null,
+	ORDER_CHARGE char(20) null,
+	constraint ORDER_NO
+		unique (ORDER_NO)
+);
+
+create table if not exists DELIVERY
+(
+	DELIVERY_ID int auto_increment
+		primary key,
+	DELIVERY_REQUEST_NO bigint null unique key,
+	DELIVERY_INC char(20) null,
+	CHARGE char(10) null,
+	HP int null,
+	ORDER_ID int null,
+	constraint delivery_ibfk_1
+		foreign key (ORDER_ID) references ORDERS (ORDER_ID)
+			on update cascade on delete set null
+);
+
+create index ORDER_ID
+	on DELIVERY (ORDER_ID);
+
+create table if not exists PRODUCT
+(
+	PRODUCT_ID int auto_increment
+		primary key,
+	PRODUCT_NO int not null,
+	RECEIPT_DATE date null,
+	LOCKEY_NO char(10) null,
+	MODEL char(5) null,
+	LICENSE_NO int null,
+	ORDER_ID int null,
+	DELIVERY_ID int null,
+	constraint product_ibfk_1
+		foreign key (ORDER_ID) references ORDERS (ORDER_ID)
+			on update cascade on delete set null,
+	constraint product_ibfk_2
+		foreign key (DELIVERY_ID) references DELIVERY (DELIVERY_ID)
+			on update cascade on delete set null
+);
+
+create index DELIVERY_ID
+	on PRODUCT (DELIVERY_ID);
+
+create index ORDER_ID
+	on PRODUCT (ORDER_ID);
+
+create table if not exists QC
+(
+	QC_ID int auto_increment
+		primary key,
+	QC char(30) null,
+	QC_DATE date null,
+	QC_CHARGE char(10) null,
+	REMARKS char(20) null,
+	PRODUCT_ID int null,
+	constraint qc_ibfk_1
+		foreign key (PRODUCT_ID) references PRODUCT (PRODUCT_ID)
+			on update cascade on delete cascade
+);
+
+create index PRODUCT_ID
+	on QC (PRODUCT_ID);
+
+create table if not exists member
+(
+	m_id int null,
+	id varchar(20) null,
+	passwd varchar(20) null,
+	name varchar(20) null,
+	address varchar(20) null,
+	profile_img varchar(100) null
+);
+
